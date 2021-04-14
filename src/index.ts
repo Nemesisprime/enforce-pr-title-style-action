@@ -9,10 +9,10 @@ async function run() {
         const title = getPullRequestTitle();
         const regex = getRegex();
 
-        let checkExclusion = "!"
+        const exclusionMarker = core.getInput("exclusionMarker", { required: false }) || "!";
 
-        if(title.startsWith(checkExclusion) == true) { 
-            core.info("Title exclusion, Passed without check.");
+        if(title.startsWith(exclusionMarker) == true) { 
+            core.info("Title exclusion triggered: Passed without checking.");
             return;
         }
 
@@ -43,10 +43,10 @@ export function getRegex() {
         }
 
         // TODO: Migrate to Input
-        let ciexclusion = "CI"
+        let ciExclusion = core.getInput("ciExclusion", { required: false }) || "CI";
 
         // TODO: Add Support to regex w/o projectkey.
-        regex = new RegExp(`(^${projectKey}-){1}(\\d|${ciexclusion})+(\\s|:)+(.)+`);
+        regex = new RegExp(`(^${projectKey}-){1}(\\d|${ciExclusion})+(\\s|:)+(.)+`);
     }
     return regex;
 }
