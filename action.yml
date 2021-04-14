@@ -5,11 +5,11 @@ inputs:
     description: 'A specific Jira Project Key that must be included.'
     required: false
   ciExclusion: 
-    description: 'A specific string suffix that may be affixed to the projectKey instead of a valid ticket number'
+    description: 'A specific string suffix that may be affixed to the projectKey instead of an Issue Key.'
     required: false
     default: "CI"
   exclusionMarker:
-    description: 'A specific string prefix that will automatically pass the title, regardless of projectKey and ticket number.'
+    description: 'A specific string prefix that will automatically pass the title, regardless of projectKey and Issue Key.'
     required: false
     default: "!"
 runs:
