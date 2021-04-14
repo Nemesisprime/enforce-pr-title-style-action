@@ -68,12 +68,17 @@ var core = __importStar(__webpack_require__(186));
 var github = __importStar(__webpack_require__(438));
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var title, regex;
+        var title, regex, exclusionMarker;
         return __generator(this, function (_a) {
             try {
                 core.debug("Starting PR Title check for Jira Issue Key");
                 title = getPullRequestTitle();
                 regex = getRegex();
+                exclusionMarker = core.getInput("exclusionMarker", { required: false }) || "!";
+                if (title.startsWith(exclusionMarker) == true) {
+                    core.info("Title exclusion triggered: Passed without checking.");
+                    return [2 /*return*/];
+                }
                 core.debug(title);
                 core.debug(regex.toString());
                 if (!regex.test(title)) {
@@ -100,9 +105,9 @@ function getRegex() {
             throw new Error("Project Key  \"" + projectKey + "\" is invalid");
         }
         // TODO: Migrate to Input
-        var ciexclusion = "CI";
+        var ciExclusion = core.getInput("ciExclusion", { required: false }) || "CI";
         // TODO: Add Support to regex w/o projectkey.
-        regex = new RegExp("(^" + projectKey + "-){1}(\\d|" + ciexclusion + ")+(\\s|:)+(.)+");
+        regex = new RegExp("(^" + projectKey + "-){1}(\\d|" + ciExclusion + ")+(\\s|:)+(.)+");
     }
     return regex;
 }
