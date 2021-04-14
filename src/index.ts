@@ -5,8 +5,16 @@ import { EventPayloads } from "@octokit/webhooks";
 async function run() {
     try {
         core.debug("Starting PR Title check for Jira Issue Key");
+
         const title = getPullRequestTitle();
         const regex = getRegex();
+
+        let checkExclusion = "!"
+
+        if(title.startsWith(checkExclusion) == true) { 
+            core.info("Title exclusion, Passed without check.");
+            return;
+        }
 
         core.debug(title);
         core.debug(regex.toString());
