@@ -5,8 +5,16 @@ import { EventPayloads } from "@octokit/webhooks";
 async function run() {
     try {
         core.debug("Starting PR Title check for Jira Issue Key");
+
         const title = getPullRequestTitle();
         const regex = getRegex();
+
+        const exclusionMarker = core.getInput("exclusionMarker", { required: false }) || "!";
+
+        if(title.startsWith(exclusionMarker) == true) { 
+            core.info("Title exclusion triggered: Passed without checking.");
+            return;
+        }
 
         core.debug(title);
         core.debug(regex.toString());
@@ -29,10 +37,16 @@ export function getRegex() {
     const projectKey = core.getInput("projectKey", { required: false });
     if (projectKey && projectKey !== "") {
         core.debug(`Project Key ${projectKey}`);
-        if (!/(?<=^|[a-z]\-|[\s\p{Punct}&&[^\-]])([A-Z][A-Z0-9_]*)/.test(projectKey)) {
+        
+        if (!/(?<=^|[a-z0-9]\-|[\s\p{Punct}&&[^\-]])([A-Z][A-Z0-9_]*)/.test(projectKey)) {
             throw new Error(`Project Key  "${projectKey}" is invalid`)
         }
-        regex = new RegExp(`(^${projectKey}-){1}(\\d)+(\\s)+(.)+`);
+
+        // TODO: Migrate to Input
+        let ciExclusion = core.getInput("ciExclusion", { required: false }) || "CI";
+
+        // TODO: Add Support to regex w/o projectkey.
+        regex = new RegExp(`(^${projectKey}-){1}(\\d|${ciExclusion})+(\\s|:)+(.)+`);
     }
     return regex;
 }

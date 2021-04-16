@@ -1,6 +1,6 @@
 {
-  "name": "@ryanvade/enforce-pr-title-style-action",
-  "version": "1.0.0",
+  "name": "@nemesisprime/enforce-pr-title-style-action",
+  "version": "1.1.0",
   "description": "Checks that a Pull Request includes a Jira Issue key",
   "main": "dist/index.js",
   "scripts": {
@@ -11,21 +11,13 @@
     "package": "tsc && ncc build --source-map --license licenses.txt",
     "test": "jest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ryanvade/enforce-pr-title-style-action.git"
-  },
   "keywords": [
     "actions",
     "pullrequests",
     "jira"
   ],
-  "author": "Ryan Owens <RyanOwens@linux.com>",
+  "author": "Dan Griffin <daniel.griffin@mckesson.com>, Ryan Owens <RyanOwens@linux.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ryanvade/enforce-pr-title-style-action/issues"
-  },
-  "homepage": "https://github.com/ryanvade/enforce-pr-title-style-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
