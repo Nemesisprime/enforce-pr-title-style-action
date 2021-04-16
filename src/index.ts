@@ -33,22 +33,21 @@ async function run() {
 }
 
 export function getRegex() {
-    let regex = /(?<=^|[a-z]\-|[\s\p{Punct}&&[^\-]])([A-Z][A-Z0-9_]*-\d+)(?![^\W_])(\s)+(.)+/;
+    let ciExclusion = core.getInput("ciExclusion", { required: false }) || "CI";
+    let regex = new RegExp(`^(\\w)+(-){1}(\\d|${ciExclusion})+(\\s|:)+(.)+`);
     const projectKey = core.getInput("projectKey", { required: false });
+
     if (projectKey && projectKey !== "") {
         core.debug(`Project Key ${projectKey}`);
-        
+
         if (!/(?<=^|[a-z0-9]\-|[\s\p{Punct}&&[^\-]])([A-Z][A-Z0-9_]*)/.test(projectKey)) {
             throw new Error(`Project Key  "${projectKey}" is invalid`)
         }
 
-        // TODO: Migrate to Input
-        let ciExclusion = core.getInput("ciExclusion", { required: false }) || "CI";
-
-        // TODO: Add Support to regex w/o projectkey.
-        regex = new RegExp(`(^${projectKey}-){1}(\\d|${ciExclusion})+(\\s|:)+(.)+`);
+        return new RegExp(`(^${projectKey}-){1}(\\d|${ciExclusion})+(\\s|:)+(.)+`);
     }
-    return regex;
+
+    return regex
 }
 
 export function getPullRequestTitle() {
