@@ -31,16 +31,21 @@ describe("index", () => {
         it("gets the default when no project key is provided", () => {
             process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] = "";
             const regex = getRegex();
-            let defaultRegex = /(?<=^|[a-z]\-|[\s\p{Punct}&&[^\-]])([A-Z][A-Z0-9_]*-\d+)(?![^\W_])(\s)+(.)+/;
+            let defaultRegex = new RegExp(`^(\\w)+(-){1}(\\d|CI)+(\\s|:)+(.)+`);
             expect(regex).toEqual(defaultRegex);
-            expect(regex.test("PR-4 this is valid")).toBe(true);
+            expect(regex.test("PR-4: this is valid")).toBe(true);
+            expect(regex.test("PR3-5 this is valid")).toBe(true);
+            expect(regex.test("PR-CI this is valid")).toBe(true);
         });
 
         it("uses a project key if it exists", () => {
-            process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] = "AB";
+            process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] = "G2M";
             const regex = getRegex();
-            expect(regex).toEqual(new RegExp(`(^AB-){1}(\\d)+(\\s)+(.)+`));
-            expect(regex.test("AB-43 stuff and things")).toBe(true);
+            expect(regex).toEqual(new RegExp(`(^G2M-){1}(\\d|CI)+(\\s|:)+(.)+`));
+            expect(regex.test("G2M-43 stuff and things")).toBe(true);
+            expect(regex.test("G2M-001: stuff and things")).toBe(true);
+            expect(regex.test("G2M-CI stuff and things")).toBe(true);
+            expect(regex.test("AP-001 stuff and things")).toBe(false);
         });
 
         it("throws an exception if the provided project key is not valid", () => {
